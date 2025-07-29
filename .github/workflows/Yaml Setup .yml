@@ -11,41 +11,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Install Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Install Newman and htmlextra reporter
-      run: |
-        npm install -g newman
-        npm install -g newman-reporter-htmlextra
+      - name: Install Newman and htmlextra reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
 
-    - name: Run Postman Collection
-      run: |
-        newman run REQRES.postman_collection.json \
-          --environment ReqresChainUrl.postman_environment.json \
-          --reporters cli,htmlextra \
-          --reporter-htmlextra-export newman-report.html
+      - name: Run Postman Collection
+        run: |
+          newman run REQRES.postman_collection.json \
+            --environment ReqresChainUrl.postman_environment.json \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export newman-report.html
 
-    - name: Upload HTML Report
-      uses: actions/upload-artifact@v4
-      with:
-        name: postman-report
-        path: newman-report.html
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: postman-report
+          path: newman-report.html
 
-- name: Send email notification
+      - name: Send email notification
         if: success()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
           server_port: 465
+          secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: "Reqres Postman Tests"
-          body: "All Reqres tests passed successfully!"
-          to: ekayhally@gmail.com
-          from: ekayhally@gmail.com
+          body: |
+            Hello,
+
+            The Reqres Postman API tests have completed successfully.
+
+            The HTML report is attached.
+
+            Regards,
+            GitHub Actions
+          to: ${{ secrets.EMAIL_TO }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          attachments: newman-report.html
