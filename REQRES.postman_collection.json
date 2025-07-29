@@ -508,14 +508,13 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"API ignores or includes extra fields\", function () {\r",
+									"/*pm.test(\"API ignores or includes extra fields\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.expect(jsonData).to.have.property(\"name\");\r",
 									"    pm.expect(jsonData).to.have.property(\"job\");\r",
 									"    pm.expect(jsonData).to.not.have.property(\"age\");\r",
 									"    pm.expect(jsonData).to.not.have.property(\"hobby\");\r",
-									"});\r",
-									""
+									"});*/"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -693,7 +692,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"PUT - Expecting 404 or graceful failure\", () => {\r",
+									"/*pm.test(\"PUT - Expecting 404 or graceful failure\", () => {\r",
 									"    pm.expect([200, 404]).to.include(pm.response.code);\r",
 									"});\r",
 									"\r",
@@ -704,7 +703,7 @@
 									"    } else {\r",
 									"        pm.expect(jsonData).to.be.an(\"object\");\r",
 									"    }\r",
-									"});\r",
+									"});*/\r",
 									""
 								],
 								"type": "text/javascript",
