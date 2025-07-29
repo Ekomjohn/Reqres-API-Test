@@ -1,0 +1,1151 @@
+{
+	"info": {
+		"_postman_id": "c724763e-6f54-4296-bade-05573c3a92a5",
+		"name": "REQRES",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32894279"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": []
+		},
+		{
+			"name": "GET: List of Users",
+			"item": [
+				{
+					"name": "List of Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Users list is returned\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.data.length).to.be.above(0);\r",
+									"    pm.environment.set(\"user_id\", jsonData.data[0].id);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users?page=2",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Page Parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse response\r",
+									"const status = pm.response.code;\r",
+									"const jsonData = pm.response.json();\r",
+									"\r",
+									"// General assertions\r",
+									"pm.test(\"Status code should be 200 for invalid input\", function () {\r",
+									"    pm.expect(status).to.be.eql(200);\r",
+									"});\r",
+									"\r",
+									"// If still 200 (due to mock API behavior), check if data is empty\r",
+									"pm.test(\"User data should be empty or undefined for invalid page\", function () {\r",
+									"    if (status === 200 && jsonData.data) {\r",
+									"        pm.expect(jsonData.data.length).to.eql(0);\r",
+									"    } else {\r",
+									"        pm.expect(jsonData.data).to.be.undefined;\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users?page=10",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GET: Single User",
+			"item": [
+				{
+					"name": "Get User with Valid ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Correct user returned\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.data.id).to.eql(parseInt(pm.environment.get(\"user_id\")));\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/{{user_id}}",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User with Invalid ID (User Not Found)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body is empty\", function () {\r",
+									"    pm.expect(pm.response.text()).to.eql(\"{}\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/{{user_id}",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User with Invalid ID Format (String instead of Number)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404 for invalid ID\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body is empty for invalid ID format\", function () {\r",
+									"    pm.expect(pm.response.text()).to.eql(\"{}\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/{{user_id}",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User with Missing ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Expecting 404 or 200 based on endpoint behavior\", function () {\r",
+									"    pm.expect([200, 404]).to.include(pm.response.code);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST: Create User",
+			"item": [
+				{
+					"name": "Create User (Valid)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User is created\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"id\");\r",
+									"    pm.expect(jsonData).to.have.property(\"createdAt\");\r",
+									"    pm.environment.set(\"post_user_id\", jsonData.id);\r",
+									"    //pm.environment.set(\"userName\", jsonData.name);\r",
+									"    console.log(\"User ID stored:\", jsonData.id);\r",
+									"});\r",
+									"\r",
+									"/*let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"POST - Status is 201\", () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"POST - Response contains ID\", () => {\r",
+									"    pm.expect(jsonData).to.have.property(\"id\");\r",
+									"    pm.environment.set(\"userId\", jsonData.id);\r",
+									"    pm.environment.set(\"userName\", jsonData.name);\r",
+									"    console.log(\"User ID stored:\", jsonData.id);\r",
+									"});*/\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{$randomFirstName}}\",\r\n    \"job\": \"{{$randomJobTitle}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid: Missing Required Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400 or unexpected success\", function () {\r",
+									"    pm.expect([400, 201]).to.include(pm.response.code);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check response when no fields are sent\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    if (pm.response.code === 201) {\r",
+									"        // Unexpected success - validate empty fields\r",
+									"        pm.expect(jsonData).to.not.have.property(\"name\");\r",
+									"        pm.expect(jsonData).to.not.have.property(\"job\");\r",
+									"    } else {\r",
+									"        // If API handles it properly, expect a 400 or error message\r",
+									"        pm.expect(jsonData).to.be.an(\"object\");\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Data Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Accepts invalid data types or returns error\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect([201, 400]).to.include(pm.response.code);\r",
+									"    if (pm.response.code === 201) {\r",
+									"        // Check if the API accepts invalid input\r",
+									"        pm.expect(jsonData.name).to.eql(1234);\r",
+									"        pm.expect(jsonData.job).to.eql(true);\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": 1234,\r\n  \"job\": true\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid: Extra Unnecessary Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"API ignores or includes extra fields\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"name\");\r",
+									"    pm.expect(jsonData).to.have.property(\"job\");\r",
+									"    pm.expect(jsonData).to.not.have.property(\"age\");\r",
+									"    pm.expect(jsonData).to.not.have.property(\"hobby\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Ekom\",\r\n  \"job\": \"QA Engineer\",\r\n  \"age\": 100,\r\n  \"hobby\": \"coding\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid: Empty Strings for Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Empty strings are accepted or rejected\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect([201, 400]).to.include(pm.response.code);\r",
+									"    if (pm.response.code === 201) {\r",
+									"        pm.expect(jsonData.name).to.eql(\"\");\r",
+									"        pm.expect(jsonData.job).to.eql(\"\");\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"\",\r\n  \"job\": \"\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PUT: Update User",
+			"item": [
+				{
+					"name": "Update with User Valid ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Job title is updated\", function () {\r",
+									"    pm.expect(jsonData.job).to.eql(\"Senior QA Engineer\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains updatedAt\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"updatedAt\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{$randomFirstName}}\",\r\n    \"job\": \"Senior QA Engineer\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/{{post_user_id}}",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"{{post_user_id}}"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update with  Invalid User ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"PUT - Expecting 404 or graceful failure\", () => {\r",
+									"    pm.expect([200, 404]).to.include(pm.response.code);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"PUT - Check response for non-existing user\", () => {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    if (pm.response.code === 200) {\r",
+									"        pm.expect(jsonData).to.have.property(\"job\", \"Invalid Update\");\r",
+									"    } else {\r",
+									"        pm.expect(jsonData).to.be.an(\"object\");\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{$randomFirstName}}\",\r\n    \"job\": \"{{$randomJobTitle}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/100,000,000",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"100,000,000"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update with  Empty Body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"PUT - Should return 200 even with empty body\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"PUT - Response may not contain updated fields\", () => {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.not.have.property(\"name\");\r",
+									"    pm.expect(jsonData).to.have.property(\"updatedAt\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/{{post_user_id}}",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"{{post_user_id}}"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PATCH: Update User",
+			"item": [
+				{
+					"name": "PATCH with Valid ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Job title is updated\", function () {\r",
+									"    pm.expect(jsonData.job).to.eql(\"Manager\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains updatedAt\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"updatedAt\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{$randomFirstName}}\",\r\n    \"job\": \"Manager\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/{{post_user_id}}",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"{{post_user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH with Invalid ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"PATCH - Expect 404 or handle string ID\", () => {\r",
+									"    pm.expect([200, 404]).to.include(pm.response.code);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"PATCH - Validate response body\", () => {\r",
+									"    let body = pm.response.text();\r",
+									"    if (pm.response.code === 200) {\r",
+									"        let jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"job\", \"Random Update\");\r",
+									"    } else {\r",
+									"        pm.expect(body).to.satisfy(val => val === \"{}\" || val === \"\");\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"job\": \"Random Update\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/{{post_user_id",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"{{post_user_id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH with No Body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"PATCH - Response still returns 200 even with no data\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"PATCH - Should contain updatedAt without data changes\", () => {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"updatedAt\");\r",
+									"    pm.expect(Object.keys(jsonData)).to.not.include(\"name\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/{{post_user_id}}",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"{{post_user_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DELETE",
+			"item": [
+				{
+					"name": "DELETE User with Valid ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204 (No Content)\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/{{post_user_id}}",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"{{post_user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE User with Invalid ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"DELETE - API responds with 204 even if user doesn't exist\", () => {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"DELETE - Empty body is expected\", () => {\r",
+									"    pm.expect(pm.response.text()).to.eql(\"\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/{{post_user_id}",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"{{post_user_id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE User with Invalid ID Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"DELETE - Accepts invalid ID format or returns 404\", () => {\r",
+									"    pm.expect([204, 404]).to.include(pm.response.code);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"DELETE - Response body should be empty\", () => {\r",
+									"    pm.expect(pm.response.text()).to.satisfy(val => val === \"\" || val === \"{}\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ReqresChainUrl}}/users/ekay",
+							"host": [
+								"{{ReqresChainUrl}}"
+							],
+							"path": [
+								"users",
+								"ekay"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "reqresurl",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
