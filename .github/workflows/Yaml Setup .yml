@@ -37,15 +37,25 @@ jobs:
         name: postman-report
         path: newman-report.html
 
-- name: Send email notification
+      - name: Send email notification
         if: success()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
           server_port: 465
+          secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: "Reqres Postman Tests"
-          body: "All Reqres tests passed successfully!"
-          to: ekayhally@gmail.com
-          from: ekayhally@gmail.com
+          body: |
+            Hello,
+
+            The Reqres Postman API tests have completed successfully.
+
+            The HTML report is attached.
+
+            Regards,
+            GitHub Actions
+          to: ${{ secrets.EMAIL_TO }}
+          from: ${{ secrets.EMAIL_USERNAME }}  
+          attachments: newman-report.html
