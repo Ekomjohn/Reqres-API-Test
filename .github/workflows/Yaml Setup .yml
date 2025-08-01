@@ -56,6 +56,6 @@ jobs:
 
             Regards,
             GitHub Actions
-          to: ${{ secrets.EMAIL_USERNAME }}
-          from: ${{ secrets.EMAIL_USERNAME }}  
+          to: ekayhally@gmail.com
+          from: ekayhally@gmail.com  
           attachments: newman-report.html
