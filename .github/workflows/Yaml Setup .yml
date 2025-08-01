@@ -37,10 +37,10 @@ jobs:
         name: postman-report
         path: newman-report.html
 
-      - name: Send email notification
-        if: success()
-        uses: dawidd6/action-send-mail@v3
-        with:
+    - name: Send email notification
+      if: success()
+      uses: dawidd6/action-send-mail@v3
+      with:
           server_address: smtp.gmail.com
           server_port: 465
           secure: true
