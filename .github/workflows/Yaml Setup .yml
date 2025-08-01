@@ -41,21 +41,21 @@ jobs:
       if: success()
       uses: dawidd6/action-send-mail@v3
       with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          secure: true
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "Reqres Postman API Test Report"
-          body: |
-            Hello,
+        server_address: smtp.gmail.com
+        server_port: 465
+        secure: true
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: "Reqres Postman API Test Report"
+        body: |
+          Hello,
 
-            The Reqres Postman API tests have completed successfully.
+          The Reqres Postman API tests have completed successfully.
 
-            The HTML report is attached.
+          The HTML report is attached.
 
-            Regards,
-            GitHub Actions
-          to: ${{ secrets.EMAIL_USERNAME }}
-          from: ${{ secrets.EMAIL_USERNAME }}  
-          attachments: newman-report.html
+          Regards,  
+          GitHub Actions
+        to: ${{ secrets.EMAIL_USERNAME }}
+        from: ${{ secrets.EMAIL_USERNAME }}
+        attachments: newman-report.html
